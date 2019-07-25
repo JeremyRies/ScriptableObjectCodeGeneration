@@ -1,0 +1,2 @@
+    [SerializeField] $RETURN$ _$METHOD$;
+    public $RETURN$ $METHOD$() => _$METHOD$;

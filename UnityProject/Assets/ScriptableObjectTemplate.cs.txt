@@ -1,0 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+/*
+* This class was generated from "ScriptableObjectsTemplate.cs.txt"
+*/
+
+[CreateAssetMenu(order = 1,fileName = "$NAME$",menuName = "ScriptableObjects/$NAME$")]
+public class $NAME$ : ScriptableObject , $INTERFACE$
+{
+$CONTENT$
+}

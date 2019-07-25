@@ -1,0 +1,12 @@
+    [Serializable]
+    private class $METHOD$Helper
+    {
+        public $ENUM$ EnumType;
+        public $RETURN$ Sprite;
+    }
+
+    [SerializeField] List<$METHOD$Helper> _$METHOD$;
+    public $RETURN$ $METHOD$($ENUM$ enumType)
+    {
+        return _$METHOD$.First(x => x.EnumType == enumType).$RETURN$;
+    }

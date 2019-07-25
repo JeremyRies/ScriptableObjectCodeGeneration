@@ -1,0 +1,5 @@
+    [SerializeField] $RETURN$[] _$METHOD$;
+    public $RETURN$ $METHOD$(int index)
+    {
+        return _$METHOD$[index];
+    }
