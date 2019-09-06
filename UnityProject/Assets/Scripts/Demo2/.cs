@@ -1,0 +1,12 @@
+/*
+* This class was generated from "Demo3Template.cs.txt"
+*/
+
+using System;
+using UnityEngine;
+
+[CreateAssetMenu(order = 1,fileName = "$NAME$",menuName = "ScriptableObjects/$NAME$")]
+public class $Name$
+{
+    public int Value;
+}
