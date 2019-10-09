@@ -20,8 +20,12 @@ public static class CodeGenerator
     public static void WriteClass(string fileName, string classContent)
     {
         File.WriteAllText("Assets/Scripts/Configs/" + fileName + ".cs", classContent);
-
-        ScriptableObjectUtility.CreateAsset(fileName);
+     
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        EditorUtility.FocusProjectWindow();
+        
+//        ScriptableObjectUtility.CreateAsset(fileName);
     }
     
 
