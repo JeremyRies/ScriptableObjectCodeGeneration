@@ -15,7 +15,7 @@ public class RuntimeCompileTest : MonoBehaviour
     public InputField _updateLoopCode;
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.KeypadEnter))
+        if(Input.GetKeyDown(KeyCode.Return))
             GenerateCode();
     }
     

@@ -41,8 +41,8 @@ public class Demo3 : EditorWindow
 }
 
 
-//[CreateAssetMenu(order = 1,fileName = "$NAME$",menuName = "ScriptableObjects/$NAME$")]
-//public class EXPERIMENT
-//{
-//    public int Value;
-//}
+[CreateAssetMenu(order = 1,fileName = "Experiment",menuName = "ScriptableObjects/Experiment")]
+public class Experiment
+{
+    public int Value;
+}
