@@ -57,17 +57,24 @@ public class RuntimeCompileTest : MonoBehaviour
                 typeof(Func<GameObject, MonoBehaviour>),
                 method
             );
-
-        // We ask the compiled method to add its component to this.gameObject
-        var addedComponent = del.Invoke(gameObject);
-
-        // The delegate pre-bakes the reflection, so repeated calls don't
-        // cost us every time, as long as we keep re-using the delegate.
+        
+        del.Invoke(gameObject);
     }
 
-    public static Assembly Compile(string source)
+    private static Assembly Compile(string source)
     {
         var provider = new CSharpCodeProvider();
+        var param = GetCompilerParameters();
+        
+        var result = provider.CompileAssemblyFromSource(param, source);
+
+        HandleErrors(result);
+        
+        return result.CompiledAssembly;
+    }
+
+    private static CompilerParameters GetCompilerParameters()
+    {
         var param = new CompilerParameters();
 
 
@@ -78,31 +85,26 @@ public class RuntimeCompileTest : MonoBehaviour
                 param.ReferencedAssemblies.Add(assembly.Location);
             }
         }
+
         param.ReferencedAssemblies.Add("System.dll");
-
-
-        // This assembly contains runtime C# code from your Assets folders:
-        // (If you're using editor scripts, they may be in another assembly)
-        //param.ReferencedAssemblies.Add("CSharp.dll");
-
 
         // Generate a dll in memory
         param.GenerateExecutable = false;
         param.GenerateInMemory = true;
-
-        // Compile the source
-        var result = provider.CompileAssemblyFromSource(param, source);
-
-        if (result.Errors.Count > 0) {
+        return param;
+    }
+    private static void HandleErrors(CompilerResults result)
+    {
+        if (result.Errors.Count > 0)
+        {
             var msg = new StringBuilder();
-            foreach (CompilerError error in result.Errors) {
+            foreach (CompilerError error in result.Errors)
+            {
                 msg.AppendFormat("Error ({0}): {1}\n",
                     error.ErrorNumber, error.ErrorText);
             }
+
             throw new Exception(msg.ToString());
         }
-
-        // Return the assembly
-        return result.CompiledAssembly;
     }
 }
