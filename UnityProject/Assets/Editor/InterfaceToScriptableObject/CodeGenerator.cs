@@ -17,9 +17,9 @@ public static class CodeGenerator
         return template;
     }
 
-    public static void WriteClass(string fileName, string classContent)
+    public static void WriteClass(string fileName, string classContent, string outputPath)
     {
-        File.WriteAllText("Assets/Scripts/Configs/" + fileName + ".cs", classContent);
+        File.WriteAllText(outputPath + fileName + ".cs", classContent);
      
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();

@@ -1,12 +1,9 @@
-namespace Editor.UnitTestExampleClasses
+public class Corridor
 {
-    public class Corridor
-    {
-        private readonly ISomeDependency _someDependency;
+    private readonly ISomeDependency _someDependency;
 
-        public Corridor(ISomeDependency someDependency)
-        {
-            _someDependency = someDependency;
-        }
+    public Corridor(ISomeDependency someDependency)
+    {
+        _someDependency = someDependency;
     }
 }

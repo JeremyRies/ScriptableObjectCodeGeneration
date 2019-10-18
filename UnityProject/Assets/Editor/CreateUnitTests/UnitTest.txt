@@ -5,12 +5,12 @@ public class $CLASSNAME$Tests
     [SetUp]
     public void Setup()
     {
-        $SETUP$
+      //  $SETUP$
     }
 
     [TearDown]
     public void TearDown()
     {
-        $TEARDOWN$
+      //  $TEARDOWN$
     }
 }

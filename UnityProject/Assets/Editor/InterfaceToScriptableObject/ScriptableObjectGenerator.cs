@@ -18,7 +18,7 @@ public class ScriptableObjectGenerator
         var generatedClass = GenerateScriptableObject(@interface, name, generatedMethods);
 
         //4 write class to file
-        CodeGenerator.WriteClass(name,generatedClass);
+        CodeGenerator.WriteClass(name,generatedClass, "Assets/Scripts/Configs/");
     }
 
     private static string GenerateScriptableObject(Type @interface, string name, string generatedMethods)

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class UnitTestGenerator
 {
-    private const string _pathToTemplates = "Assets/Editor/CreateUnitTests";
+    private const string _pathToTemplates = "Assets/Editor/CreateUnitTests/";
     
     public static void Generate(Type classToTest)
     {
@@ -16,10 +16,10 @@ public class UnitTestGenerator
         var generatedFields = GenerateFields(constructorParams,className);
         var unitTestDependencyStrings = new Dictionary<string, string>();
         unitTestDependencyStrings.Add("CLASSNAME", className);
-        unitTestDependencyStrings.Add("Fields", generatedFields);
+        unitTestDependencyStrings.Add("FIELDS", generatedFields);
         var unitTestCode = CodeGenerator.ReplaceInTemplate(_pathToTemplates + "UnitTest.txt", unitTestDependencyStrings);
         
-        CodeGenerator.WriteClass(classToTest + "Tests",unitTestCode);
+        CodeGenerator.WriteClass(classToTest + "Tests",unitTestCode, "Assets/Editor/UnitTests");
     }
 
     private static string GenerateFields(List<(Type, string)> constructorParams, string className)
@@ -29,7 +29,7 @@ public class UnitTestGenerator
         foreach (var constructorParam in constructorParams)
         {
             var interFaceType = constructorParam.Item1.ToString();
-            dependencyReplacementStrings.Add("$INTERFACETYPE", interFaceType);
+            dependencyReplacementStrings.Add("INTERFACETYPE", interFaceType);
             
             var mockName = constructorParam.Item2.ToLowerFirstChar();
             

@@ -1,7 +1,4 @@
-namespace Editor.UnitTestExampleClasses
+public interface ISomeDependency
 {
-    public interface ISomeDependency
-    {
-        int GetMoney();
-    }
+    int GetMoney();
 }
