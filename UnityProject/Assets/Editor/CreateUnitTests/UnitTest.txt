@@ -1,0 +1,16 @@
+public class $CLASSNAME$Tests
+{
+    $FIELDS$
+    
+    [SetUp]
+    public void Setup()
+    {
+        $SETUP$
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        $TEARDOWN$
+    }
+}

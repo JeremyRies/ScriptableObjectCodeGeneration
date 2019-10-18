@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 public static class ReflectionHelper
@@ -17,5 +18,21 @@ public static class ReflectionHelper
         }
 
         return methods;
+    }
+
+
+    public static List<(Type, string)> GetConstructorParameters(Type classToTest)
+    {
+        var parameters = classToTest.GetConstructors()[0].GetParameters();
+
+        return parameters.Select(parameter => (parameter.ParameterType, parameter.Name)).ToList();
+    }
+    
+    public static string ToLowerFirstChar(this string input)
+    {
+        string newString = input;
+        if (!String.IsNullOrEmpty(newString) && Char.IsUpper(newString[0]))
+            newString = Char.ToLower(newString[0]) + newString.Substring(1);
+        return newString;
     }
 }
