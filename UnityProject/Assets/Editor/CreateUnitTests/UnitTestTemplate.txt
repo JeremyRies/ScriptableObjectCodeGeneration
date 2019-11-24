@@ -1,9 +1,12 @@
+using Moq;
+using NUnit.Framework;
+
 public class $CLASSNAME$Tests
 {
     $FIELDS$
     
     [SetUp]
-    public void Setup()
+    public void SetUp()
     {
       //  $SETUP$
     }

@@ -7,17 +7,20 @@ using UnityEngine;
 public class UnitTestGenerator
 {
     private const string _pathToTemplates = "Assets/Editor/CreateUnitTests/";
-    
+    private const string _templateName = "UnitTestTemplate.txt";
+
     public static void Generate(Type classToTest)
     {
         var className = classToTest.Name;
         var constructorParams = ReflectionHelper.GetConstructorParameters(classToTest);
 
         var generatedFields = GenerateFields(constructorParams,className);
-        var unitTestDependencyStrings = new Dictionary<string, string>();
-        unitTestDependencyStrings.Add("CLASSNAME", className);
-        unitTestDependencyStrings.Add("FIELDS", generatedFields);
-        var unitTestCode = CodeGenerator.ReplaceInTemplate(_pathToTemplates + "UnitTest.txt", unitTestDependencyStrings);
+
+
+        var unitTestContent = new Dictionary<string, string>();
+        unitTestContent.Add("CLASSNAME", className);
+        unitTestContent.Add("FIELDS", generatedFields);
+        var unitTestCode = CodeGenerator.ReplaceInTemplate(_pathToTemplates + _templateName, unitTestContent);
         
         CodeGenerator.WriteClass(classToTest + "Tests",unitTestCode, "Assets/Editor/UnitTests");
     }
