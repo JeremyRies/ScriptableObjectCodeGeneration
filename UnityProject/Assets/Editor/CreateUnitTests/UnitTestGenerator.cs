@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class UnitTestGenerator
 {
-    private const string k_outputFolder = "Assets/Editor/UnitTests/";
+    #region Constants
+    private const string k_outputFolder = "Assets/Scripts/Tests/Editor/";
 
     private const string k_pathToTemplates = "Assets/Editor/CreateUnitTests/Templates/";
     private const string k_templateNameMain = "TemplateMain.txt";
@@ -13,6 +15,7 @@ public class UnitTestGenerator
     private const string k_templateNameTestCases = "TemplateTestCase.txt";
 
     private const string k_templateNamespaces = "NAMESPACES";
+    private const string k_templateNamespace = "NAMESPACE";
     private const string k_templateClassname = "CLASSNAME";
     private const string k_templateFields = "FIELDS";
     private const string k_templateSetup = "SETUP";
@@ -26,15 +29,15 @@ public class UnitTestGenerator
     private const string k_templateMethodBody = "METHOD_BODY";
 
     private const string k_classnameSuffix = "Tests";
-    
+    #endregion
 
-    public static void Generate(Type classToTest)
+    public static void Generate(Type classToTest, string fullPath)
     {
         var className = classToTest.Name;
         var constructorParams = ReflectionHelper.GetConstructorParameters(classToTest);
 
         //--- Generate parts ---//
-        var namespaces = GenerateNamespaces(classToTest);
+        var namespaces = GenerateNamespaces(constructorParams);
         var generatedFields = GenerateFields(constructorParams);
         var setupContent = GenerateSetup(className, constructorParams);
         var teardownContent = GenerateTeardown();
@@ -43,6 +46,7 @@ public class UnitTestGenerator
         //--- Generate main file ---//
         var unitTestContent = new Dictionary<string, string>();
         unitTestContent.Add(k_templateNamespaces, namespaces);
+        unitTestContent.Add(k_templateNamespace, classToTest.Namespace);
         unitTestContent.Add(k_templateClassname, className);
         unitTestContent.Add(k_templateFields, generatedFields);
         unitTestContent.Add(k_templateSetup, setupContent);
@@ -52,12 +56,40 @@ public class UnitTestGenerator
         var unitTestCode = CodeGenerator.ReplaceInTemplate(k_pathToTemplates + k_templateNameMain, unitTestContent);
 
         Debug.Log($"[UnitTestGenerator] Unit test generated for {className}");
-        CodeGenerator.WriteClass(className + k_classnameSuffix, unitTestCode, k_outputFolder);
+        
+        CodeGenerator.WriteClass(className + k_classnameSuffix, unitTestCode, k_outputFolder + GetOutputDir(fullPath));
     }
 
-    private static string GenerateNamespaces(Type classToTest)
+    private static string GetOutputDir(string fullPath)
     {
-        return $"using {classToTest.Namespace};";
+        var split = fullPath.Split('/');
+        var filePath = "";
+
+        // Assets/Scripts/.../.../filename.cs
+        for (int i = 2; i < split.Length - 1; i++)
+        {
+            filePath += split[i] + '/';
+        }
+
+        return filePath;
+    }
+
+    private static string GenerateNamespaces(List<(Type, string)> constructorParams)
+    {
+        HashSet<string> namespaceSet = new HashSet<string>();
+        foreach (var param in constructorParams)
+        {
+            var type = param.Item1;
+            namespaceSet.Add(type.Namespace);
+        }
+        
+        var namespaces = "";
+        foreach (var name in namespaceSet)
+        {
+            namespaces += $"using {name};\r\n";
+        }
+        
+        return namespaces;
     }
 
     private static string GenerateFields(List<(Type, string)> constructorParams)
@@ -68,7 +100,7 @@ public class UnitTestGenerator
 
         foreach (var constructorParam in constructorParams)
         {
-            var interFaceType = constructorParam.Item1.ToString();
+            var interFaceType = constructorParam.Item1.Name;
             dependencyReplacementStrings.Add(k_templateType, interFaceType);
 
             var mockName = constructorParam.Item2.ToLowerFirstChar();
@@ -99,7 +131,7 @@ public class UnitTestGenerator
 
         foreach (var param in constructorParams)
         {
-            var type = param.Item1;
+            var type = param.Item1.Name;
             var name = param.Item2;
 
             if (first) first = false;
@@ -122,7 +154,7 @@ public class UnitTestGenerator
 
     private static string GenerateTeardown()
     {
-        return "_mockRepository.VerifyAll();";
+        return "";
     }
 
     private static string GenerateTestCases(Type classToTest)

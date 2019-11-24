@@ -2,6 +2,8 @@ using NUnit.Framework;
 using Moq;
 $NAMESPACES$
 
+namespace $NAMESPACE$ {
+
 public class $CLASSNAME$Tests
 {
     private $CLASSNAME$ _model;
@@ -18,8 +20,11 @@ public class $CLASSNAME$Tests
     [TearDown]
     public void TearDown()
     {
+		_mockRepository.VerifyAll();
 		$TEARDOWN$
     }
 
 	$TESTCASES$
+}
+
 }

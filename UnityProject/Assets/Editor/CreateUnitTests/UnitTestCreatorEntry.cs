@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,7 +15,6 @@ public class UnitTestCreatorEntry : EditorWindow
         if (selectedScript == null) return false;
 
         Type selectedType = selectedScript.GetClass();
-        Debug.Log("type: " + selectedType);
 
         if (selectedType == null) return false;
         if (!selectedType.IsClass) return false;
@@ -27,6 +28,6 @@ public class UnitTestCreatorEntry : EditorWindow
         MonoScript selectedScript = Selection.activeObject as MonoScript;
         Type selectedType = selectedScript.GetClass();
 
-        UnitTestGenerator.Generate(selectedType);
+        UnitTestGenerator.Generate(selectedType, AssetDatabase.GetAssetPath(selectedScript));
     }
 }
