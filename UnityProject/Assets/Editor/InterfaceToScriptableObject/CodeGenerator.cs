@@ -19,6 +19,10 @@ public static class CodeGenerator
 
     public static void WriteClass(string fileName, string classContent, string outputPath)
     {
+        if (!Directory.Exists(outputPath))
+        {
+            var dir = Directory.CreateDirectory(outputPath);
+        }
         File.WriteAllText(outputPath + fileName + ".cs", classContent);
      
         AssetDatabase.SaveAssets();

@@ -1,9 +1,12 @@
-using Moq;
 using NUnit.Framework;
+using Moq;
+$NAMESPACES$
 
 public class $CLASSNAME$Tests
 {
     private $CLASSNAME$ _model;
+
+	private MockRepository _mockRepository;
 	$FIELDS$
     
     [SetUp]

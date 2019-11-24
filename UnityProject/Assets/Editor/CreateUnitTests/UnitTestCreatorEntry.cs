@@ -7,22 +7,25 @@ public class UnitTestCreatorEntry : EditorWindow
     [MenuItem("Assets/Create/Testing/UnitTest %T", true)]
     private static bool ValidateIfCanGenerate()
     {
-        var selectedObject = Selection.activeObject.name;
-        var selectedType = Type.GetType(selectedObject + "," + typeof(ReferenceScript).Assembly);
- 
-        if (selectedType != null && selectedType.IsClass)
-        {
-            return true;
-        }
+        if (Selection.activeObject == null) return false;
+        
+        MonoScript selectedScript = Selection.activeObject as MonoScript;
+        if (selectedScript == null) return false;
 
-        return false;
+        Type selectedType = selectedScript.GetClass();
+        Debug.Log("type: " + selectedType);
+
+        if (selectedType == null) return false;
+        if (!selectedType.IsClass) return false;
+
+        return true;
     }
 
     [MenuItem("Assets/Create/Testing/UnitTest %T", priority = 2)]
     private static void Generate()
     {
-        var selectedObject = Selection.activeObject.name;
-        var selectedType = Type.GetType(selectedObject + "," + typeof(ReferenceScript).Assembly);
+        MonoScript selectedScript = Selection.activeObject as MonoScript;
+        Type selectedType = selectedScript.GetClass();
 
         UnitTestGenerator.Generate(selectedType);
     }

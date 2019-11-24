@@ -1,0 +1,7 @@
+_mockRepository = new MockRepository(MockBehavior.Strict);
+
+		$MOCKS$
+
+		_model = new $CLASSNAME$(
+			$DEPENDENCIES$
+		);

@@ -1,14 +1,27 @@
-public class Corridor
+namespace MyNamespace
 {
-    private readonly ISomeDependency _someDependency;
 
-    public Corridor(ISomeDependency someDependency)
+
+    public class Corridor
     {
-        _someDependency = someDependency;
+        private readonly ISomeDependency _someDependency;
+        private readonly ISomeDependency _someDependency2;
+
+        public Corridor(ISomeDependency someDependency, ISomeDependency someDependency2, ISomeDependency dep3)
+        {
+            _someDependency = someDependency;
+            _someDependency2 = someDependency2;
+        }
+
+        public int CorridorMoney()
+        {
+            return _someDependency.GetMoney();
+        }
+
+        public void JustDoIt()
+        {
+
+        }
     }
 
-    public int CorridorMoney()
-    {
-        return _someDependency.GetMoney();
-    }
 }
