@@ -1,7 +1,7 @@
-namespace MyNamespace
+using Assets.Scripts.UnitTestExampleDeps;
+
+namespace Assets.Scripts.UnitTestExampleClasses
 {
-
-
     public class Corridor
     {
         private readonly ISomeDependency _someDependency;
@@ -23,5 +23,4 @@ namespace MyNamespace
 
         }
     }
-
 }

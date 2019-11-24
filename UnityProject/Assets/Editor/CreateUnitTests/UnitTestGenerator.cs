@@ -4,8 +4,29 @@ using UnityEngine;
 
 public class UnitTestGenerator
 {
-    private const string _pathToTemplates = "Assets/Editor/CreateUnitTests/";
-    private const string _templateName = "UnitTestTemplate.txt";
+    private const string k_outputFolder = "Assets/Editor/UnitTests/";
+
+    private const string k_pathToTemplates = "Assets/Editor/CreateUnitTests/Templates/";
+    private const string k_templateNameMain = "TemplateMain.txt";
+    private const string k_templateNameFields = "TemplateFields.txt";
+    private const string k_templateNameSetupBody = "TemplateSetupBody.txt";
+    private const string k_templateNameTestCases = "TemplateTestCase.txt";
+
+    private const string k_templateNamespaces = "NAMESPACES";
+    private const string k_templateClassname = "CLASSNAME";
+    private const string k_templateFields = "FIELDS";
+    private const string k_templateSetup = "SETUP";
+    private const string k_templateTeardown = "TEARDOWN";
+    private const string k_templateTestcases = "TESTCASES";
+    private const string k_templateType = "TYPE";
+    private const string k_templateMockname = "MOCKNAME";
+    private const string k_templateMocks = "MOCKS";
+    private const string k_templateDependencies = "DEPENDENCIES";
+    private const string k_templateMethod = "METHOD";
+    private const string k_templateMethodBody = "METHOD_BODY";
+
+    private const string k_classnameSuffix = "Tests";
+    
 
     public static void Generate(Type classToTest)
     {
@@ -21,17 +42,17 @@ public class UnitTestGenerator
 
         //--- Generate main file ---//
         var unitTestContent = new Dictionary<string, string>();
-        unitTestContent.Add("NAMESPACES", namespaces);
-        unitTestContent.Add("CLASSNAME", className);
-        unitTestContent.Add("FIELDS", generatedFields);
-        unitTestContent.Add("SETUP", setupContent);
-        unitTestContent.Add("TEARDOWN", teardownContent);
-        unitTestContent.Add("TESTCASES", testCasesContent);
+        unitTestContent.Add(k_templateNamespaces, namespaces);
+        unitTestContent.Add(k_templateClassname, className);
+        unitTestContent.Add(k_templateFields, generatedFields);
+        unitTestContent.Add(k_templateSetup, setupContent);
+        unitTestContent.Add(k_templateTeardown, teardownContent);
+        unitTestContent.Add(k_templateTestcases, testCasesContent);
 
-        var unitTestCode = CodeGenerator.ReplaceInTemplate(_pathToTemplates + _templateName, unitTestContent);
+        var unitTestCode = CodeGenerator.ReplaceInTemplate(k_pathToTemplates + k_templateNameMain, unitTestContent);
 
         Debug.Log($"[UnitTestGenerator] Unit test generated for {className}");
-        CodeGenerator.WriteClass(className + "Tests", unitTestCode, "Assets/Editor/UnitTests/");
+        CodeGenerator.WriteClass(className + k_classnameSuffix, unitTestCode, k_outputFolder);
     }
 
     private static string GenerateNamespaces(Type classToTest)
@@ -48,14 +69,14 @@ public class UnitTestGenerator
         foreach (var constructorParam in constructorParams)
         {
             var interFaceType = constructorParam.Item1.ToString();
-            dependencyReplacementStrings.Add("TYPE", interFaceType);
+            dependencyReplacementStrings.Add(k_templateType, interFaceType);
 
             var mockName = constructorParam.Item2.ToLowerFirstChar();
 
-            dependencyReplacementStrings.Add("MOCKNAME", "_" + mockName);
+            dependencyReplacementStrings.Add(k_templateMockname, "_" + mockName);
 
             var dependencyField =
-            CodeGenerator.ReplaceInTemplate(_pathToTemplates + "DependencyFields.txt", dependencyReplacementStrings);
+            CodeGenerator.ReplaceInTemplate(k_pathToTemplates + k_templateNameFields, dependencyReplacementStrings);
             dependencyReplacementStrings.Clear();
 
             if (first) first = false;
@@ -92,11 +113,11 @@ public class UnitTestGenerator
             dependencies += $"_{name}.Object";
         }
 
-        vars.Add("MOCKS", mocksCreation);
-        vars.Add("CLASSNAME", className);
-        vars.Add("DEPENDENCIES", dependencies);
+        vars.Add(k_templateMocks, mocksCreation);
+        vars.Add(k_templateClassname, className);
+        vars.Add(k_templateDependencies, dependencies);
 
-        return CodeGenerator.ReplaceInTemplate(_pathToTemplates + "SetupBody.txt", vars);
+        return CodeGenerator.ReplaceInTemplate(k_pathToTemplates + k_templateNameSetupBody, vars);
     }
 
     private static string GenerateTeardown()
@@ -113,8 +134,8 @@ public class UnitTestGenerator
         var publicMethods = ReflectionHelper.GetMethods(classToTest);
         foreach (var method in publicMethods)
         {
-            cases.Add("METHOD", method.Name);
-            cases.Add("METHOD_BODY", $"// Arrange" + "\r\n\t\t" +
+            cases.Add(k_templateMethod, method.Name);
+            cases.Add(k_templateMethodBody, $"// Arrange" + "\r\n\t\t" +
                 "// TODO: setup your mocks here" + "\r\n\t\t" +
                 "\r\n\t\t" +
                 $"// Execute" + "\r\n\t\t" +
@@ -126,7 +147,7 @@ public class UnitTestGenerator
             if (first) first = false;
             else allCases += "\r\n\r\n\t";
 
-            allCases += CodeGenerator.ReplaceInTemplate(_pathToTemplates + "TestCases.txt", cases);
+            allCases += CodeGenerator.ReplaceInTemplate(k_pathToTemplates + k_templateNameTestCases, cases);
 
             cases.Clear();
         }
