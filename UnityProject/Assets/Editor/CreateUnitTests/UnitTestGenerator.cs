@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class UnitTestGenerator
@@ -14,18 +12,26 @@ public class UnitTestGenerator
         var className = classToTest.Name;
         var constructorParams = ReflectionHelper.GetConstructorParameters(classToTest);
 
-        var generatedFields = GenerateFields(constructorParams,className);
+        //--- Generate parts ---//
+        var generatedFields = GenerateFields(constructorParams);
+        var setupContent = GenerateSetup(className);
+        var teardownContent = GenerateTeardown();
+        var testCasesContent = GenerateTestCases(classToTest);
 
-
+        //--- Generate main file ---//
         var unitTestContent = new Dictionary<string, string>();
         unitTestContent.Add("CLASSNAME", className);
         unitTestContent.Add("FIELDS", generatedFields);
+        unitTestContent.Add("SETUP", setupContent);
+        unitTestContent.Add("TEARDOWN", teardownContent);
+        unitTestContent.Add("TESTCASES", testCasesContent);
+
         var unitTestCode = CodeGenerator.ReplaceInTemplate(_pathToTemplates + _templateName, unitTestContent);
-        
-        CodeGenerator.WriteClass(classToTest + "Tests",unitTestCode, "Assets/Editor/UnitTests");
+
+        CodeGenerator.WriteClass(classToTest + "Tests", unitTestCode, "Assets/Editor/UnitTests");
     }
 
-    private static string GenerateFields(List<(Type, string)> constructorParams, string className)
+    private static string GenerateFields(List<(Type, string)> constructorParams)
     {
         var dependencyReplacementStrings = new Dictionary<string, string>();
 
@@ -33,20 +39,40 @@ public class UnitTestGenerator
         {
             var interFaceType = constructorParam.Item1.ToString();
             dependencyReplacementStrings.Add("INTERFACETYPE", interFaceType);
-            
+
             var mockName = constructorParam.Item2.ToLowerFirstChar();
-            
-            dependencyReplacementStrings.Add("MOCKNAME", mockName);
+
+            dependencyReplacementStrings.Add("MOCKNAME", "_" + mockName);
         }
 
         var dependencyFields =
             CodeGenerator.ReplaceInTemplate(_pathToTemplates + "DependencyFields.txt", dependencyReplacementStrings);
 
-        var fieldReplacementStrings = new Dictionary<string, string>();
-        fieldReplacementStrings.Add("CLASSNAME", className);
-        fieldReplacementStrings.Add("DEPENDENCYFIELDS", dependencyFields);
+        return dependencyFields;
+    }
 
+    private static string GenerateSetup(string className)
+    {
+        var dependencies = "_someDependency.Object";
+        return $"_model = new {className}({dependencies});";
+    }
 
-        return CodeGenerator.ReplaceInTemplate(_pathToTemplates + "Fields.txt", fieldReplacementStrings);
+    private static string GenerateTeardown()
+    {
+        return "";
+    }
+
+    private static string GenerateTestCases(Type classToTest)
+    {
+        var cases = new Dictionary<string, string>();
+
+        var publicMethods = ReflectionHelper.GetMethods(classToTest);
+        foreach (var method in publicMethods)
+        {
+            cases.Add("METHOD", method.Name);
+            cases.Add("METHOD_BODY", "// TODO");
+        }
+
+        return CodeGenerator.ReplaceInTemplate(_pathToTemplates + "TestCases.txt", cases);
     }
 }

@@ -1,1 +1,1 @@
-private Mock<$INTERFACETYPE$> _$MOCKNAME$;
+private Mock<$INTERFACETYPE$> $MOCKNAME$;

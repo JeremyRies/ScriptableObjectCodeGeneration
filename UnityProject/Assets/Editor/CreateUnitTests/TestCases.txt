@@ -1,0 +1,4 @@
+[TestCase]
+	public void $METHOD$_DoesSomething_WhenSomeState() {
+		$METHOD_BODY$
+	}

@@ -3,17 +3,20 @@ using NUnit.Framework;
 
 public class $CLASSNAME$Tests
 {
-    $FIELDS$
+    private $CLASSNAME$ _model;
+	$FIELDS$
     
     [SetUp]
     public void SetUp()
     {
-      //  $SETUP$
+		$SETUP$
     }
 
     [TearDown]
     public void TearDown()
     {
-      //  $TEARDOWN$
+		$TEARDOWN$
     }
+
+	$TESTCASES$
 }

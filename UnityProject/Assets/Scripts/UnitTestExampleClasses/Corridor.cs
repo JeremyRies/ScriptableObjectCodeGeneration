@@ -6,4 +6,9 @@ public class Corridor
     {
         _someDependency = someDependency;
     }
+
+    public int CorridorMoney()
+    {
+        return _someDependency.GetMoney();
+    }
 }
